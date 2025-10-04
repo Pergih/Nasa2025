@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>👁️ StellarEye - NASA Space Apps Challenge 2025</title>
+    <meta name="description" content="Embiggen your eyes! Explore the universe through satellite perspectives with StellarEye." />
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- MapBox GL CSS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    
+    <!-- Preconnect to NASA APIs -->
+    <link rel="preconnect" href="https://skyview.gsfc.nasa.gov" />
+    <link rel="preconnect" href="https://exoplanetarchive.ipac.caltech.edu" />
+  </head>
+  <body class="bg-gray-900 text-white overflow-hidden">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
