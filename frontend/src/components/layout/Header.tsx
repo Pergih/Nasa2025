@@ -1,9 +1,6 @@
 import React from 'react'
 import { Menu, Eye } from 'lucide-react'
 import { useCelestialStore } from '@/stores/celestialStore'
-import SearchBar from '../ui/SearchBar'
-import LayerControls from '../ui/LayerControls'
-import StatusIndicator from '../ui/StatusIndicator'
 
 const Header: React.FC = () => {
   const { toggleSidebar } = useCelestialStore()
@@ -30,15 +27,9 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Center section - Search */}
+      {/* Placeholder content */}
       <div className="flex-1 max-w-2xl mx-8">
-        <SearchBar />
-      </div>
-
-      {/* Right section - Layer controls and status */}
-      <div className="flex items-center space-x-4">
-        <StatusIndicator />
-        <LayerControls />
+        <p className="text-gray-400 text-center">About Page Header</p>
       </div>
     </header>
   )
