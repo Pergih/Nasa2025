@@ -13,7 +13,7 @@
 - [ ] Browser cleared of cache/cookies
 - [ ] Internet connection tested
 - [ ] Backup screenshots ready
-- [ ] Demo objects pre-tested (Jupiter, Andromeda, Orion)
+- [ ] Demo objects pre-tested (Jupiter with 4+ images, Andromeda, Orion)
 
 ---
 
@@ -26,17 +26,13 @@
 
 ### **Part 1: Multi-Wavelength Vision (30 seconds)**
 
-**Action**: Click background dropdown, switch from "ESO Optical" to "NASA WISE Infrared"
+**Action**: Click background dropdown, switch from "DSS Optical" to other surveys
 
-**Script**: *"Watch what happens when we switch from optical light - what human eyes see - to infrared from NASA's WISE satellite."*
+**Script**: *"Watch what happens when we switch from optical light - what human eyes see - to other wavelengths that only satellites can detect."*
 
-*[Wait for background to change]*
+*[Switch between different surveys]*
 
-**"Same sky, completely different view. Now we're seeing warm dust, star formation regions, and objects hidden behind cosmic dust. This is how satellites see beyond human vision."**
-
-**Action**: Switch to "ESA Planck CMB"
-
-**"And here's the cosmic microwave background - the universe's baby picture from 380,000 years after the Big Bang. Only satellites can see this."**
+**"Each survey shows the same sky but reveals different phenomena. The ESO optical survey shows stars as we'd see them, while other wavelengths reveal hidden structures and cosmic phenomena that are invisible to human eyes."**
 
 ### **Part 2: Object Exploration (40 seconds)**
 
@@ -56,11 +52,11 @@
 
 **Action**: Click on a Jupiter image to open it in the viewer
 
-**Script**: *"Our advanced image viewer lets you explore these high-resolution NASA images like never before."*
+**Script**: *"Our advanced image viewer lets you explore these detailed mission images."*
 
 **Action**: Scroll to zoom in, drag to pan around the image
 
-**"Scroll to zoom, drag to pan. This is a real image from the Cassini mission - you can see Saturn's rings in incredible detail that only satellites can capture."**
+**"Scroll to zoom, drag to pan. Here we can see Jupiter from different mission perspectives - Voyager's Great Red Spot discovery, Juno's polar cyclones, infrared heat signatures, and Hubble's aurora observations."**
 
 **Action**: Click "Fit" button, then "Full" for fullscreen
 

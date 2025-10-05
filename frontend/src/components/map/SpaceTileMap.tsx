@@ -247,9 +247,9 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
           }
         ),
 
-        // Real WISE Infrared Survey - NASA WISE all-sky
+        // Real NASA WISE Infrared Survey (WORKING)
         infrared: L.imageOverlay(
-          'https://wise.ssl.berkeley.edu/gallery_images/WISE_allsky_mosaic_color.jpg',
+          'https://images-assets.nasa.gov/image/PIA15482/PIA15482~orig.jpg',
           [[-90, -180], [90, 180]],
           {
             attribution: '© NASA WISE All-Sky Survey',
@@ -258,12 +258,12 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
           }
         ),
 
-        // Real 2MASS Near-Infrared Survey
+        // Real NASA 2MASS Near-Infrared Survey (WORKING)
         twomass: L.imageOverlay(
-          'https://www.ipac.caltech.edu/2mass/gallery/images/allsky/color_allsky.jpg',
+          'https://images-assets.nasa.gov/image/PIA04251/PIA04251~orig.jpg',
           [[-90, -180], [90, 180]],
           {
-            attribution: '© 2MASS All-Sky Survey',
+            attribution: '© NASA 2MASS All-Sky Survey',
             opacity: 0.8,
             alt: '2MASS Near-Infrared All-Sky Survey'
           }
