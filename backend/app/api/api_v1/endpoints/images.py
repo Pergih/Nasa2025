@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Query, HTTPException
+from fastapi.responses import StreamingResponse
 from typing import List
 import logging
+import httpx
+import asyncio
+from urllib.parse import urlparse
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -68,3 +72,72 @@ async def get_object_image_gallery(object_id: str):
     except Exception as e:
         logger.error(f"Error getting image gallery: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.get("/proxy")
+async def proxy_nasa_image(
+    url: str = Query(..., description="NASA image URL to proxy"),
+):
+    """
+    Proxy NASA images to avoid CORS issues.
+    
+    - **url**: The NASA image URL to fetch
+    """
+    try:
+        # Validate that it's a NASA domain
+        parsed_url = urlparse(url)
+        nasa_domains = [
+            'webbtelescope.org',
+            'hubblesite.org', 
+            'photojournal.jpl.nasa.gov',
+            'chandra.harvard.edu',
+            'apod.nasa.gov',
+            'images-api.nasa.gov',
+            'science.nasa.gov',
+            'stsci-opo.org',
+            'static.uahirise.org',
+            'uahirise.org',
+            'lroc.sese.asu.edu',
+            'spitzer.caltech.edu',
+            'missionjuno.swri.edu'
+        ]
+        
+        if not any(domain in parsed_url.netloc for domain in nasa_domains):
+            raise HTTPException(status_code=400, detail="Only NASA domains are allowed")
+        
+        # Fetch the image with proper headers
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(
+                url,
+                headers={
+                    'User-Agent': 'StellarEye/1.0 (NASA Space Apps Challenge)',
+                    'Accept': 'image/*,*/*;q=0.8',
+                },
+                follow_redirects=True
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code, 
+                    detail=f"Failed to fetch image: {response.status_code}"
+                )
+            
+            # Stream the image back with proper headers
+            def generate():
+                for chunk in response.iter_bytes(chunk_size=8192):
+                    yield chunk
+            
+            return StreamingResponse(
+                generate(),
+                media_type=response.headers.get('content-type', 'image/jpeg'),
+                headers={
+                    'Cache-Control': 'public, max-age=86400',  # Cache for 24 hours
+                    'Access-Control-Allow-Origin': '*',
+                }
+            )
+            
+    except httpx.TimeoutException:
+        logger.error(f"Timeout fetching image: {url}")
+        raise HTTPException(status_code=504, detail="Image fetch timeout")
+    except Exception as e:
+        logger.error(f"Error proxying image {url}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to proxy image")

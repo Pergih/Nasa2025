@@ -2,6 +2,7 @@ import axios from 'axios'
 
 // NASA APIs and High-Resolution Image Resources
 const NASA_IMAGE_API = 'https://images-api.nasa.gov'
+const BACKEND_API = 'http://localhost:8000/api/v1'
 
 export interface SpaceImage {
   id: string
@@ -32,6 +33,42 @@ export interface SpaceImage {
 
 import { imageDatabase } from './imageDatabase'
 
+// Helper function to proxy NASA images through backend
+const proxyNASAImage = (originalUrl: string): string => {
+  // Check if it's a NASA domain that needs proxying
+  const nasaDomains = [
+    'webbtelescope.org',
+    'hubblesite.org', 
+    'photojournal.jpl.nasa.gov',
+    'chandra.harvard.edu',
+    'apod.nasa.gov',
+    'science.nasa.gov',
+    'stsci-opo.org',
+    'static.uahirise.org',
+    'uahirise.org',
+    'lroc.sese.asu.edu',
+    'spitzer.caltech.edu',
+    'missionjuno.swri.edu'
+  ]
+  
+  const needsProxy = nasaDomains.some(domain => originalUrl.includes(domain))
+  
+  if (needsProxy) {
+    return `${BACKEND_API}/images/proxy?url=${encodeURIComponent(originalUrl)}`
+  }
+  
+  return originalUrl
+}
+
+// Helper function to process images and proxy NASA URLs
+const processImagesWithProxy = (images: SpaceImage[]): SpaceImage[] => {
+  return images.map(image => ({
+    ...image,
+    url: proxyNASAImage(image.url),
+    thumbnail: image.thumbnail ? proxyNASAImage(image.thumbnail) : undefined
+  }))
+}
+
 export const imageAPI = {
   // Get images for a celestial object using optimized database system
   getObjectImages: async (objectName: string, ra: number, dec: number): Promise<SpaceImage[]> => {
@@ -39,12 +76,15 @@ export const imageAPI = {
       // Use the optimized image database with caching
       const images = await imageDatabase.getImagesForObject(objectName, ra, dec)
       
+      // Process images to use proxy for NASA URLs
+      const processedImages = processImagesWithProxy(images)
+      
       // Add real-time NASA API data if available (non-blocking)
-      imageAPI.enhanceWithLiveData(objectName, ra, dec, images).catch(error => {
+      imageAPI.enhanceWithLiveData(objectName, ra, dec, processedImages).catch(error => {
         console.log('Live NASA API enhancement failed:', error.message)
       })
       
-      return images
+      return processedImages
     } catch (error) {
       console.error('Failed to load images from database:', error)
       return imageAPI.getFallbackImages(objectName, ra, dec)
@@ -97,12 +137,15 @@ export const imageAPI = {
 
   // Fallback images for error cases
   getFallbackImages: (objectName: string, ra: number, dec: number): SpaceImage[] => {
+    const fallbackUrl = 'https://webbtelescope.org/files/live/sites/webb/files/home/webb-science/early-release-observations/_images/STSCI-J-p22031a-f-4398x4398.png'
+    const fallbackThumbnail = 'https://webbtelescope.org/files/live/sites/webb/files/home/webb-science/early-release-observations/_images/STSCI-J-p22031a-f-4398x4398.jpg'
+    
     return [
       {
         id: `${objectName}_fallback_jwst`,
         title: `${objectName} - JWST Deep Field`,
-        url: 'https://webbtelescope.org/files/live/sites/webb/files/home/webb-science/early-release-observations/_images/STSCI-J-p22031a-f-4398x4398.png',
-        thumbnail: 'https://webbtelescope.org/files/live/sites/webb/files/home/webb-science/early-release-observations/_images/STSCI-J-p22031a-f-4398x4398.jpg',
+        url: proxyNASAImage(fallbackUrl),
+        thumbnail: proxyNASAImage(fallbackThumbnail),
         description: `Fallback JWST deep field view for ${objectName}`,
         telescope: 'James Webb Space Telescope',
         wavelength: 'Near-Infrared',
@@ -118,7 +161,7 @@ export const imageAPI = {
   getLegacyImages: async (objectName: string, ra: number, dec: number): Promise<SpaceImage[]> => {
     try {
       // Add curated NASA image collection
-      const nasaImages: SpaceImage[] = []
+      let nasaImages: SpaceImage[] = []
 
       // VERIFIED HIGH-QUALITY NASA IMAGES
       nasaImages.push(
@@ -744,7 +787,7 @@ export const imageAPI = {
         }
       )
 
-      return nasaImages
+      return processImagesWithProxy(nasaImages)
     } catch (error) {
       console.error('Failed to load legacy images:', error)
       return []

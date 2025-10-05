@@ -45,9 +45,10 @@ self.addEventListener('fetch', (event) => {
   }
 })
 
-// Check if URL is from NASA domains
+// Check if URL is from NASA domains or our proxy
 function isNASAResource(url) {
-  return NASA_DOMAINS.some(domain => url.hostname.includes(domain))
+  return NASA_DOMAINS.some(domain => url.hostname.includes(domain)) ||
+         url.pathname.includes('/api/v1/images/proxy')
 }
 
 // Check if request is for an image
@@ -70,9 +71,25 @@ async function handleImageRequest(request) {
       }
     }
 
-    // Fetch from network
+    // Fetch from network with CORS handling
     console.log('🌐 Network fetch:', request.url.split('/').pop())
-    const networkResponse = await fetch(request)
+    console.log('🔧 Fetch mode:', fetchOptions.mode, 'for URL:', request.url)
+    
+    // Use different fetch strategies based on URL type
+    const url = new URL(request.url)
+    let fetchOptions = { credentials: 'omit' }
+    
+    // For our backend proxy, use normal CORS mode
+    if (url.pathname.includes('/api/v1/images/proxy')) {
+      fetchOptions.mode = 'cors'
+    } else if (isNASAResource(url)) {
+      // For direct NASA domains, use no-cors mode
+      fetchOptions.mode = 'no-cors'
+    } else {
+      fetchOptions.mode = 'cors'
+    }
+    
+    const networkResponse = await fetch(request.url, fetchOptions)
     
     // Cache successful responses
     if (networkResponse.ok) {
@@ -83,11 +100,21 @@ async function handleImageRequest(request) {
       const headers = new Headers(responseToCache.headers)
       headers.set('sw-cache-date', Date.now().toString())
       
-      const modifiedResponse = new Response(responseToCache.body, {
-        status: responseToCache.status,
-        statusText: responseToCache.statusText,
-        headers: headers
-      })
+      // For no-cors responses, we can't read headers, so create a simple response
+      let modifiedResponse
+      if (fetchOptions.mode === 'no-cors') {
+        modifiedResponse = new Response(responseToCache.body, {
+          status: 200,
+          statusText: 'OK',
+          headers: { 'sw-cache-date': Date.now().toString() }
+        })
+      } else {
+        modifiedResponse = new Response(responseToCache.body, {
+          status: responseToCache.status,
+          statusText: responseToCache.statusText,
+          headers: headers
+        })
+      }
       
       cache.put(request, modifiedResponse)
       console.log('💾 Cached:', request.url.split('/').pop())

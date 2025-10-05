@@ -32,7 +32,7 @@ export const clearServiceWorkerCache = async (): Promise<boolean> => {
         resolve(event.data.success || false)
       }
       
-      navigator.serviceWorker.controller.postMessage(
+      navigator.serviceWorker.controller?.postMessage(
         { type: 'CLEAR_CACHE' },
         [messageChannel.port2]
       )
@@ -50,7 +50,7 @@ export const getCacheSize = async (): Promise<number> => {
         resolve(event.data.size || 0)
       }
       
-      navigator.serviceWorker.controller.postMessage(
+      navigator.serviceWorker.controller?.postMessage(
         { type: 'GET_CACHE_SIZE' },
         [messageChannel.port2]
       )
