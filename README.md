@@ -2,231 +2,93 @@
 
 ## 🎯 **"Embiggen Your Eyes" Challenge Solution**
 
-**Interactive Space Exploration Through Satellite Perspectives**
+StellarEye helps people see beyond what their eyes can naturally perceive by creating an interactive space exploration experience using real satellite and telescope data from NASA and ESA missions.
 
-StellarEye transforms how we explore the universe by providing **satellite eyes** to see beyond human vision. Using real NASA/ESA mission data, users can experience the cosmos through multiple wavelengths and perspectives impossible with natural eyesight.
-
----
-
-## 🚀 **NASA Space Apps Challenge 2025 Alignment**
-
-### **Challenge: "Embiggen Your Eyes"**
+### **Challenge Goal:**
 > *Help people see beyond what their eyes can naturally perceive by creating an interactive experience using satellite data*
 
 ### **Our Solution:**
-✅ **Multi-Wavelength Vision**: View the sky in optical, infrared, radio, and cosmic microwave background  
-✅ **Satellite Perspectives**: All data from space-based telescopes and missions  
-✅ **Interactive Exploration**: Google Maps-style interface for intuitive space navigation  
-✅ **Real NASA Data**: Authentic mission data from Hubble, JWST, Gaia, WISE, Planck  
-✅ **Educational Impact**: Learn about different types of celestial objects and observation methods  
+- **Multi-Wavelength Vision**: View space in optical, infrared, and microwave wavelengths
+- **Interactive Space Map**: Google Maps-style interface for exploring the cosmos  
+- **Real NASA Images**: High-resolution images from Hubble, JWST, Cassini, and other missions
+- **Educational Experience**: Learn about different celestial objects and how satellites observe them  
 
----
+## 🌌 **What You Can See**
 
-## 🌌 **Real Astronomical Survey Data**
+### **Different Ways Satellites See Space**
+- **🔭 Optical Survey**: Stars and galaxies as human eyes would see them (ESO All-Sky)
+- **⭐ Gaia Star Map**: Precise positions of over 1 billion stars (ESA Gaia)
+- **🌡️ Infrared View**: Warm dust and hidden star formation (NASA WISE)
+- **🔴 Near-Infrared**: See through cosmic dust clouds (2MASS Survey)
+- **🌌 Microwave**: The cosmic microwave background - universe's baby picture (Planck)
 
-### **Background Sky Surveys (Satellite Perspectives)**
+### **Real NASA Mission Images**
+- **Hubble Space Telescope**: Deep space galaxies and nebulae
+- **James Webb Space Telescope**: Infrared views of the early universe
+- **Cassini Mission**: Saturn's rings and moons
+- **Mars Rovers**: High-resolution Mars surface images
+- **Apollo Missions**: Historic lunar photography
 
-| Survey | Mission | Wavelength | What It Reveals |
-|--------|---------|------------|-----------------|
-| **🔭 ESO All-Sky Optical** | European Southern Observatory | Visible Light | Stars and galaxies as human eyes would see them |
-| **⭐ ESA Gaia Star Catalog** | Gaia Space Telescope | Optical + Astrometry | Precise 3D positions of 1+ billion stars |
-| **🌡️ NASA WISE All-Sky** | Wide-field Infrared Survey Explorer | Mid-Infrared | Warm dust, star formation, hidden stellar populations |
-| **🔴 2MASS Near-Infrared** | Two Micron All Sky Survey | Near-Infrared | Stellar populations behind dust clouds |
-| **🌌 ESA Planck CMB** | Planck Space Telescope | Microwave | Cosmic microwave background - the universe's baby picture |
+## 🚀 **How to Run**
 
-### **Object Image Gallery**
-- **🔭 Hubble Space Telescope**: Ultra-deep field images, planetary nebulae, galaxies
-- **🌌 James Webb Space Telescope**: Infrared deep fields, exoplanet atmospheres, early universe
-- **🔬 Chandra X-ray Observatory**: High-energy phenomena, black holes, hot gas
-- **🪐 Cassini Saturn Mission**: Detailed views of Saturn's rings and moons
-- **🔴 Mars Reconnaissance Orbiter**: Ultra-high resolution Mars surface imagery
-- **🌙 Lunar Reconnaissance Orbiter**: Detailed lunar surface mapping
+### **Requirements**
+- Node.js 18+ and npm
+- Python 3.11+
+- uv (Python package manager)
 
----
-
-## 🚀 **Quick Start**
-
-### **Prerequisites**
-- **Node.js 18+** and npm
-- **Python 3.11+** 
-- **uv** (Python package manager) - [Install Guide](https://docs.astral.sh/uv/getting-started/installation/)
-
-### **Launch StellarEye**
+### **Start the App**
 ```bash
-# One-command startup
+# Quick start
 ./dev_stellareye.sh
 
-# Manual startup:
+# Or manually:
 # Backend: cd backend && uv run uvicorn app.main:app --reload --port 8000
 # Frontend: cd frontend && npm run dev
 ```
 
-### **Access Points**
-- **🌌 StellarEye App:** http://localhost:3000
-- **🔧 Backend API:** http://localhost:8000
-- **📚 API Documentation:** http://localhost:8000/docs
+**Open:** http://localhost:3000
 
----
-
-## ✨ **Features & Capabilities**
+## ✨ **Features**
 
 ### **🗺️ Interactive Space Map**
-- **Google Maps-style Interface**: Intuitive pan, zoom, and click interactions
-- **Real Astronomical Backgrounds**: Switch between different space telescope surveys
-- **Celestial Object Markers**: Stars ⭐, galaxies 🌌, planets 🪐, exoplanets 🌍, nebulae ☁️
-- **Smart Zoom Scaling**: Objects scale appropriately based on stellar magnitude and zoom level
-- **Coordinate System**: Proper RA/Dec astronomical coordinates
+- Google Maps-style interface for exploring space
+- Switch between different satellite survey backgrounds
+- Click on stars ⭐, galaxies 🌌, planets 🪐, and nebulae ☁️
+- Search for objects by name or type
+- Real astronomical coordinates
 
-### **🔍 Advanced Search & Discovery**
-- **Real-time Search**: Find objects by name, type, or constellation
-- **Type Filtering**: Filter by stars, planets, exoplanets, galaxies, nebulae
-- **Object Details**: Magnitude, distance, constellation, coordinates
-- **Interactive Popups**: Rich information cards with astronomical data
+### **🖼️ Image Gallery**
+- High-resolution NASA mission images
+- Advanced image viewer with zoom and pan
+- Multiple telescope views of the same objects
+- Image details: telescope, wavelength, observation date
 
-### **🖼️ NASA Image Gallery**
-- **Multi-Telescope Views**: Same object seen through different space telescopes
-- **High-Resolution Images**: Direct from NASA/ESA archives
-- **Progressive Loading**: Optimized image delivery with multiple resolutions
-- **Metadata Rich**: Telescope, wavelength, observation date, technical details
+### **🛰️ Satellite Perspectives**
+- See space in wavelengths invisible to human eyes
+- Compare optical, infrared, and microwave views
+- Learn how different satellites observe the universe
 
-### **🛰️ Satellite Perspective Features**
-- **Multi-Wavelength Vision**: See invisible infrared, radio, X-ray emissions
-- **Time-Domain Astronomy**: Images from different epochs and missions
-- **3D Spatial Understanding**: Proper astronomical coordinate mapping
-- **Scale Awareness**: From nearby planets to distant galaxies
+## 🛠️ **Built With**
 
----
+- **Frontend**: React + TypeScript, Tailwind CSS, Leaflet Maps
+- **Backend**: FastAPI (Python), NASA Image Proxy
+- **Data**: NASA Images API, ESA Archives, Real astronomical catalogs
 
-## 🛠️ **Technology Stack**
+## 🎓 **Educational Value**
 
-### **Frontend Architecture**
-- **React 18** + **TypeScript**: Modern, type-safe UI development
-- **Tailwind CSS**: Responsive, space-themed design system
-- **Leaflet Maps**: Interactive mapping with astronomical coordinate support
-- **Service Worker**: Advanced image caching for offline capability
+Learn about:
+- How different wavelengths reveal different cosmic phenomena
+- Real NASA and ESA space missions and their discoveries  
+- The scale of the universe from planets to distant galaxies
+- How satellites and telescopes observe space
 
-### **Backend Infrastructure**
-- **FastAPI**: High-performance Python API framework
-- **NASA Image Proxy**: CORS-compliant image delivery system
-- **Astronomical Calculations**: Coordinate transformations and object positioning
-- **Error Handling**: Graceful fallbacks for network issues
+## 📄 **Data Attribution**
 
-### **Data Sources & APIs**
-- **NASA Images API**: Official NASA image archive access
-- **ESA Science Archives**: Gaia, Planck, and other ESA mission data
-- **Astronomical Catalogs**: Real stellar positions and object metadata
-- **Image Processing**: Multi-resolution delivery and optimization
+- **NASA**: Images and data from NASA missions
+- **ESA**: Gaia and Planck data from European Space Agency
+- **ESO**: All-sky survey from European Southern Observatory
+- **2MASS**: Near-infrared survey from NASA/IPAC
 
 ---
 
-## 🎓 **Educational Impact**
-
-### **Learning Outcomes**
-- **Electromagnetic Spectrum**: Understand how different wavelengths reveal different phenomena
-- **Scale of Universe**: From nearby planets to cosmic microwave background
-- **Space Missions**: Learn about real NASA/ESA telescopes and their discoveries
-- **Astronomical Coordinates**: Understand how we map the sky
-- **Object Classification**: Distinguish between stars, galaxies, nebulae, and exoplanets
-
-### **Target Audiences**
-- **Students**: Interactive learning about astronomy and space science
-- **Educators**: Teaching tool for electromagnetic spectrum and space exploration
-- **Space Enthusiasts**: Explore real mission data in an engaging interface
-- **General Public**: Accessible introduction to modern astronomy
-
----
-
-## 🌟 **NASA Space Apps Challenge Goals Achieved**
-
-| Challenge Requirement | StellarEye Implementation |
-|----------------------|---------------------------|
-| **"Embiggen Your Eyes"** | Multi-wavelength views reveal invisible universe |
-| **Satellite Perspectives** | All data from space-based telescopes and missions |
-| **Interactive Experience** | Google Maps-style exploration interface |
-| **Educational Value** | Learn about real space missions and discoveries |
-| **Technical Innovation** | Advanced image caching, coordinate mapping, progressive loading |
-| **Real NASA Data** | Direct integration with NASA/ESA archives and APIs |
-
----
-
-## 🔬 **Technical Innovations**
-
-### **Astronomical Coordinate Mapping**
-- Proper RA/Dec to screen coordinate transformations
-- Multiple coordinate system support for different surveys
-- Zoom-responsive object scaling based on stellar magnitude
-
-### **Advanced Image Delivery**
-- CORS-compliant NASA image proxy
-- Progressive resolution loading (thumbnail → full → ultra-high-res)
-- Service worker caching for offline capability
-- Graceful fallbacks for network issues
-
-### **Multi-Survey Integration**
-- Real-time switching between different astronomical surveys
-- Proper attribution and metadata for all data sources
-- Error handling with procedural fallbacks
-
----
-
-## 🏆 **Awards & Recognition Potential**
-
-This project demonstrates:
-- **Technical Excellence**: Advanced web technologies with astronomical data
-- **Educational Impact**: Making space science accessible and engaging  
-- **Innovation**: Novel approach to space data visualization
-- **NASA Mission Alignment**: Direct use of real space telescope data
-- **User Experience**: Intuitive interface for complex astronomical concepts
-
----
-
-## 🤝 **Contributing & Development**
-
-### **Project Structure**
-```
-stellareye/
-├── frontend/          # React + TypeScript UI
-├── backend/           # FastAPI Python backend  
-├── docs/             # Documentation
-└── dev_stellareye.sh # Development startup script
-```
-
-### **Development Workflow**
-1. **Fork & Clone**: Standard GitHub workflow
-2. **Install Dependencies**: `npm install` (frontend) + `uv sync` (backend)
-3. **Start Development**: `./dev_stellareye.sh`
-4. **Test Changes**: Verify both map and gallery functionality
-5. **Submit PR**: Include screenshots of new features
-
----
-
-## 📄 **License & Attribution**
-
-### **Data Sources**
-- **NASA**: Images and data courtesy of NASA and its missions
-- **ESA**: Gaia and Planck data courtesy of European Space Agency
-- **ESO**: All-sky survey courtesy of European Southern Observatory
-- **2MASS**: Near-infrared survey courtesy of NASA/IPAC
-
-### **Code License**
-MIT License - See LICENSE file for details
-
----
-
-## 🌌 **Future Enhancements**
-
-- **Real-time Data**: Live satellite positions and space weather
-- **3D Visualization**: WebGL-based 3D space exploration
-- **Mobile App**: Native iOS/Android applications
-- **VR/AR Support**: Immersive space exploration experiences
-- **Collaborative Features**: Share discoveries and create custom tours
-
----
-
-**🚀 Built for NASA Space Apps Challenge 2025 - "Embiggen Your Eyes" 👁️**
-
-*Transforming how humanity explores the cosmos through satellite perspectives and real space mission data.*
-
----
-
-**Built for NASA Space Apps Challenge 2025** 🌌
+**Built for NASA Space Apps Challenge 2025 - "Embiggen Your Eyes" Challenge** 🌌

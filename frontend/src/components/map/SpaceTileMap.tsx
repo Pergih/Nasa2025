@@ -120,18 +120,20 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
       map = L.map(mapRef.current, {
         center: [0, 0], // Center on equator/prime meridian
         zoom: 3,
-        minZoom: 2,
-        maxZoom: 10,
+        minZoom: 1,
+        maxZoom: 12,
         zoomControl: true,
         attributionControl: false,
         worldCopyJump: false,
         maxBounds: [[-90, -180], [90, 180]], // Limit to valid coordinate range
-        maxBoundsViscosity: 0.8,
-        zoomSnap: 0.5, // Allow half-step zooming for smoother experience
-        zoomDelta: 0.5, // Smaller zoom steps
-        wheelPxPerZoomLevel: 120, // More responsive wheel zoom
+        maxBoundsViscosity: 0.5,
+        zoomSnap: 0.1, // Much smaller snap increments for smooth zoom
+        zoomDelta: 0.3, // Smaller zoom steps
+        wheelPxPerZoomLevel: 60, // More sensitive wheel zoom
+        wheelDebounceTime: 40, // Faster wheel response
         doubleClickZoom: true,
-        boxZoom: true
+        boxZoom: true,
+        // Removed smoothWheelZoom as it's not in Leaflet core
       })
 
       console.log('🗺️ Map initialized successfully')
@@ -371,31 +373,22 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
     ; (map as any).switchMapLayer = switchMapLayer
 
     // Handle zoom changes for astronomical surveys with smooth transitions
-    map.on('zoomstart', () => {
-      // Add smooth transition class
-      if (mapRef.current) {
-        mapRef.current.style.transition = 'all 0.3s ease'
-      }
+    // Handle zoom changes smoothly without snapping
+    map.on('zoom', () => {
+      const zoom = map.getZoom()
+      setCurrentZoom(zoom)
     })
 
     map.on('zoomend', () => {
       const zoom = map.getZoom()
       setCurrentZoom(zoom)
 
-      // Remove transition class after zoom
-      if (mapRef.current) {
-        setTimeout(() => {
-          mapRef.current!.style.transition = ''
-        }, 300)
-      }
-
       // Log zoom level for debugging
-      console.log(`🔍 Zoom level: ${zoom.toFixed(1)}, Survey: ${mapMode}`)
+      console.log(`🔍 Zoom level: ${zoom.toFixed(2)}, Survey: ${mapMode}`)
 
-      // Adjust opacity and visibility based on zoom for better astronomical viewing
+      // Adjust opacity based on zoom for better astronomical viewing
       Object.values(spaceTileLayers).forEach(layer => {
         if (map.hasLayer(layer)) {
-          // Higher zoom = more detail visible
           const opacity = Math.min(1.0, 0.7 + (zoom / 20))
           layer.setOpacity(opacity)
         }
@@ -575,38 +568,66 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
       }
     })
 
-    // Add a test marker at center for debugging
-    if (mapInstanceRef.current && process.env.NODE_ENV === 'development') {
-      const testIcon = L.divIcon({
-        className: 'test-marker',
-        html: `
-          <div style="
-            width: 30px;
-            height: 30px;
-            background: #ff0000;
-            border: 3px solid white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 0 20px #ff0000;
-            z-index: 2000;
-          ">
-            TEST
+    // Add visual regions for major extended objects at their real survey image positions
+    const majorObjects = [
+      { name: 'Andromeda Galaxy (M31)', center: [41.269, 10.685], radius: 3.2, color: '#9370DB', id: 'andromeda' },
+      { name: 'Orion Nebula (M42)', center: [-5.391, 83.822], radius: 1.3, color: '#FF69B4', id: 'orion_nebula' },
+      { name: 'Crab Nebula (M1)', center: [22.015, 83.633], radius: 0.3, color: '#00FFFF', id: 'crab_nebula' },
+      { name: 'Whirlpool Galaxy (M51)', center: [47.195, 202.470], radius: 0.2, color: '#87CEEB', id: 'whirlpool' }
+    ]
+
+    majorObjects.forEach(region => {
+      // Only add region if the object exists in our list
+      const hasObject = celestialObjects.some(obj => obj.id === region.id)
+      if (hasObject && currentZoom >= 3) {
+        const circle = L.circle([region.center[0], region.center[1]], {
+          radius: region.radius * 111000, // Convert degrees to meters
+          fillColor: region.color,
+          fillOpacity: 0.08,
+          color: region.color,
+          weight: 1,
+          opacity: 0.3,
+          dashArray: '8, 4'
+        }).bindPopup(`
+          <div style="color: black; font-family: sans-serif; text-align: center;">
+            <h4 style="margin: 0 0 4px 0; color: ${region.color};">${region.name}</h4>
+            <p style="margin: 0; font-size: 11px; color: #666;">Extended Object Region</p>
+            <p style="margin: 4px 0 0 0; font-size: 10px; color: #888;">~${region.radius}° diameter</p>
           </div>
-        `,
-        iconSize: [36, 36],
-        iconAnchor: [18, 18]
+        `)
+
+        markersRef.current.addLayer(circle)
+      }
+    })
+
+    // Add constellation boundaries for major constellations (at higher zoom levels)
+    if (currentZoom >= 4) {
+      const constellations = [
+        { name: 'Orion', bounds: [[-25, 60], [25, 100]], color: '#4A90E2' },
+        { name: 'Ursa Major', bounds: [[40, 120], [70, 230]], color: '#7ED321' },
+        { name: 'Cassiopeia', bounds: [[50, 340], [80, 40]], color: '#F5A623' },
+        { name: 'Taurus', bounds: [[10, 50], [35, 90]], color: '#D0021B' }
+      ]
+
+      constellations.forEach(constellation => {
+        const rectangle = L.rectangle(constellation.bounds as [[number, number], [number, number]], {
+          color: constellation.color,
+          weight: 1,
+          opacity: 0.3,
+          fillOpacity: 0.05,
+          dashArray: '10, 5'
+        }).bindPopup(`
+          <div style="color: black; font-family: sans-serif; text-align: center;">
+            <h4 style="margin: 0 0 4px 0; color: ${constellation.color};">${constellation.name}</h4>
+            <p style="margin: 0; font-size: 11px; color: #666;">Constellation Boundary</p>
+          </div>
+        `)
+
+        markersRef.current.addLayer(rectangle)
       })
-
-      const testMarker = L.marker([0, 0], { icon: testIcon })
-        .bindPopup('Test marker at coordinates (0, 0)')
-
-      markersRef.current.addLayer(testMarker)
-      console.log('🗺️ Added test marker at center')
     }
+
+    // Test marker removed - using real astronomical coordinates now
 
     // Fit map to show all markers if we have objects
     if (celestialObjects.length > 0 && mapInstanceRef.current) {
@@ -629,12 +650,12 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
     }
   }, [celestialObjects, selectedObject, onObjectClick])
 
-  // Pan to selected object
+  // Pan to selected object (only when object changes, not zoom)
   useEffect(() => {
     if (selectedObject && mapInstanceRef.current) {
-      mapInstanceRef.current.setView([selectedObject.dec, selectedObject.ra], Math.max(currentZoom, 4))
+      mapInstanceRef.current.setView([selectedObject.dec, selectedObject.ra], Math.max(mapInstanceRef.current.getZoom(), 4))
     }
-  }, [selectedObject, currentZoom])
+  }, [selectedObject])
 
   // Handle map mode changes
   useEffect(() => {
@@ -760,6 +781,16 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
                 >
                   🔍-
                 </button>
+              </div>
+            </div>
+
+            {/* Coordinate Info */}
+            <div className="bg-gray-800 bg-opacity-90 text-white p-2 rounded-lg mb-2">
+              <div className="text-xs text-gray-400 mb-1">Astronomical Coordinates:</div>
+              <div className="text-xs space-y-1">
+                <div>RA: Right Ascension (0-360°)</div>
+                <div>Dec: Declination (-90° to +90°)</div>
+                <div className="text-blue-400">Objects pinpointed in real survey images</div>
               </div>
             </div>
 

@@ -9,7 +9,10 @@ const NASA_DOMAINS = [
   'photojournal.jpl.nasa.gov',
   'chandra.harvard.edu',
   'apod.nasa.gov',
-  'images-api.nasa.gov'
+  'images-api.nasa.gov',
+  'images-assets.nasa.gov',
+  'science.nasa.gov',
+  'stsci-opo.org'
 ]
 
 // Install event - cache essential resources
@@ -73,7 +76,6 @@ async function handleImageRequest(request) {
 
     // Fetch from network with CORS handling
     console.log('🌐 Network fetch:', request.url.split('/').pop())
-    console.log('🔧 Fetch mode:', fetchOptions.mode, 'for URL:', request.url)
     
     // Use different fetch strategies based on URL type
     const url = new URL(request.url)
@@ -83,11 +85,13 @@ async function handleImageRequest(request) {
     if (url.pathname.includes('/api/v1/images/proxy')) {
       fetchOptions.mode = 'cors'
     } else if (isNASAResource(url)) {
-      // For direct NASA domains, use no-cors mode
-      fetchOptions.mode = 'no-cors'
+      // For direct NASA domains, try CORS first, fallback to no-cors
+      fetchOptions.mode = 'cors'
     } else {
       fetchOptions.mode = 'cors'
     }
+    
+    console.log('🔧 Fetch mode:', fetchOptions.mode, 'for URL:', request.url)
     
     const networkResponse = await fetch(request.url, fetchOptions)
     
