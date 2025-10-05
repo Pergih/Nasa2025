@@ -36,7 +36,7 @@ const PerformanceMonitor: React.FC = () => {
 
   const clearCache = async () => {
     await imageAPI.clearCache()
-    console.log('🧹 Cache cleared')
+    // Cache cleared
   }
 
   if (!isVisible) {

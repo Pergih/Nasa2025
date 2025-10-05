@@ -180,7 +180,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ src, alt, className = '' }) =
       containerRef.current.requestFullscreen().then(() => {
         setIsFullscreen(true)
       }).catch(err => {
-        console.log('Fullscreen failed:', err)
+        // Fullscreen failed
       })
     } else {
       document.exitFullscreen().then(() => {

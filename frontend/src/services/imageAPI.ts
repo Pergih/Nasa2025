@@ -84,7 +84,7 @@ export const imageAPI = {
   // Get images for a celestial object using working NASA URLs
   getObjectImages: async (objectName: string, ra: number, dec: number): Promise<SpaceImage[]> => {
     try {
-      console.log(`🖼️ Loading images for ${objectName}`)
+      // Loading images for object
       
       // Create working images using direct NASA URLs (some may need proxy)
       const workingImages: SpaceImage[] = []
@@ -292,20 +292,16 @@ export const imageAPI = {
 
       workingImages.push(...fallbackImages)
 
-      console.log(`🖼️ Created ${workingImages.length} images for ${objectName}`)
-      
       // Test first few image URLs
       if (workingImages.length > 0) {
-        console.log('🔍 Testing image URLs...')
+        // Testing image URLs in background
         for (let i = 0; i < Math.min(3, workingImages.length); i++) {
           const image = workingImages[i]
-          console.log(`Testing: ${image.title} - ${image.url}`)
           // Test in background without blocking
           fetch(image.url, { method: 'HEAD' }).then(response => {
-            const works = response.ok
-            console.log(`${works ? '✅' : '❌'} ${image.title}: ${works ? 'OK' : 'FAILED'}`)
+            // Image test completed
           }).catch(() => {
-            console.log(`❌ ${image.title}: FAILED`)
+            // Image test failed
           })
         }
       }
@@ -354,11 +350,11 @@ export const imageAPI = {
         
         // Add live images to existing collection (in background)
         existingImages.push(...liveImages)
-        console.log(`🔄 Enhanced with ${liveImages.length} live NASA images`)
+        // Enhanced with live NASA images
       }
     } catch (error) {
       // Silently fail - we already have cached images
-      console.log('Live enhancement skipped')
+      // Live enhancement skipped
     }
   },
 

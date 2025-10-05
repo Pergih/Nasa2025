@@ -108,7 +108,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null)
   const markersRef = useRef<L.LayerGroup>(new L.LayerGroup())
   const [currentZoom, setCurrentZoom] = useState(2)
-  const [mapMode, setMapMode] = useState<'survey' | 'infrared' | 'planck' | 'gaia' | 'twomass' | 'fallback' | 'debug'>('survey')
+  const [mapMode, setMapMode] = useState<'survey' | 'infrared' | 'planck' | 'gaia' | 'twomass' | 'fallback'>('survey')
   const [mapLoaded, setMapLoaded] = useState(false)
 
   useEffect(() => {
@@ -136,23 +136,23 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
         // Removed smoothWheelZoom as it's not in Leaflet core
       })
 
-      console.log('🗺️ Map initialized successfully')
+      // Map initialized successfully
 
       // Force map to resize after a short delay
       setTimeout(() => {
         map.invalidateSize()
-        console.log('🗺️ Map size invalidated and refreshed')
+        // Map size invalidated and refreshed
       }, 100)
 
       // Add a longer delay to ensure everything is loaded
       setTimeout(() => {
         map.invalidateSize()
-        console.log('🗺️ Final map refresh')
+        // Final map refresh
       }, 500)
 
       setMapLoaded(true)
     } catch (error) {
-      console.error('Error initializing map:', error)
+      // Error initializing map
       return
     }
 
@@ -297,12 +297,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
       planck: spaceLayers.planck,     // Planck CMB
       fallback: spaceLayers.fallback, // Procedural fallback
 
-      // Debug layer
-      debug: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors (Debug Mode)',
-        maxZoom: 18,
-        opacity: 0.7
-      })
+
     }
 
     // Function to switch map layers
@@ -331,9 +326,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
         case 'twomass':
           spaceTileLayers.twomass.addTo(map)
           break
-        case 'debug':
-          spaceTileLayers.debug.addTo(map)
-          break
+
         case 'fallback':
           spaceTileLayers.fallback.addTo(map)
           break
@@ -343,12 +336,12 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
             spaceTileLayers.survey.addTo(map)
             // Add error handling for image loading
             spaceTileLayers.survey.on('error', () => {
-              console.log('🗺️ Real image failed, using fallback starfield')
+              // Real image failed, using fallback starfield
               map.removeLayer(spaceTileLayers.survey)
               spaceTileLayers.fallback.addTo(map)
             })
           } catch (error) {
-            console.log('🗺️ Using fallback starfield')
+            // Using fallback starfield
             spaceTileLayers.fallback.addTo(map)
           }
       }
@@ -357,14 +350,14 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
     // Add initial layer with error handling
     try {
       switchMapLayer(mapMode)
-      console.log('🗺️ Initial map layer loaded:', mapMode)
+      // Initial map layer loaded
 
       // Add loading indicators for real images
-      if (mapMode !== 'debug' && mapMode !== 'fallback') {
-        console.log('🖼️ Loading real astronomical survey image...')
+      if (mapMode !== 'fallback') {
+        // Loading real astronomical survey image
       }
     } catch (error) {
-      console.error('🗺️ Error loading initial map layer:', error)
+      // Error loading initial map layer
       // Fallback to procedural starfield
       spaceTileLayers.fallback.addTo(map)
     }
@@ -383,8 +376,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
       const zoom = map.getZoom()
       setCurrentZoom(zoom)
 
-      // Log zoom level for debugging
-      console.log(`🔍 Zoom level: ${zoom.toFixed(2)}, Survey: ${mapMode}`)
+      // Track zoom level changes
 
       // Adjust opacity based on zoom for better astronomical viewing
       Object.values(spaceTileLayers).forEach(layer => {
@@ -415,11 +407,8 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
     // Clear existing markers
     markersRef.current.clearLayers()
 
-    // Debug: Log the number of objects
-    console.log('🗺️ Adding markers for', celestialObjects.length, 'objects')
-    console.log('🗺️ First few objects:', celestialObjects.slice(0, 3))
-    console.log('🗺️ Map mode:', mapMode)
-    console.log('🗺️ Map loaded:', mapLoaded)
+    // Clear existing markers
+    // Adding markers for celestial objects
 
     // Create highly visible celestial object markers
     const createCelestialMarker = (obj: CelestialObject, isSelected: boolean = false, zoomLevel: number = 3) => {
@@ -481,10 +470,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
       const lat = Math.max(-90, Math.min(90, obj.dec || 0))
       const lng = ((obj.ra || 0) > 180) ? (obj.ra || 0) - 360 : (obj.ra || 0)
 
-      // Debug log for first few objects
-      if (celestialObjects.indexOf(obj) < 3) {
-        console.log(`Object ${obj.name}: RA=${obj.ra}, Dec=${obj.dec} -> lng=${lng}, lat=${lat}`)
-      }
+
 
       const isSelected = selectedObject?.id === obj.id
       const icon = createCelestialMarker(obj, isSelected, currentZoom)
@@ -562,10 +548,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
 
       markersRef.current.addLayer(marker)
 
-      // Debug: Log marker creation
-      if (celestialObjects.indexOf(obj) < 3) {
-        console.log(`Created marker for ${obj.name} at [${lat}, ${lng}]`)
-      }
+
     })
 
     // Add visual regions for major extended objects at their real survey image positions
@@ -635,17 +618,17 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
         const group = L.featureGroup(markersRef.current.getLayers())
         if (group.getBounds().isValid()) {
           mapInstanceRef.current.fitBounds(group.getBounds(), { padding: [50, 50] })
-          console.log('🗺️ Fitted map bounds to show all objects')
+          // Fitted map bounds to show all objects
         } else {
           // If bounds are not valid, center on first object
           const firstObj = celestialObjects[0]
           if (firstObj) {
             mapInstanceRef.current.setView([firstObj.dec, firstObj.ra], 4)
-            console.log('🗺️ Centered on first object:', firstObj.name)
+            // Centered on first object
           }
         }
       } catch (error) {
-        console.log('🗺️ Could not fit bounds:', error)
+        // Could not fit bounds
       }
     }
   }, [celestialObjects, selectedObject, onObjectClick])
@@ -673,12 +656,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
 
   return (
     <div className="relative w-full h-full" style={{ minHeight: '500px' }}>
-      {/* Debug info overlay */}
-      <div className="absolute top-2 right-2 bg-black bg-opacity-75 text-white p-2 rounded text-xs z-50">
-        <div>Map Status: {mapLoaded ? '✅ Loaded' : '⏳ Loading'}</div>
-        <div>Objects: {celestialObjects.length}</div>
-        <div>Mode: {mapMode}</div>
-      </div>
+
 
       {/* Loading overlay */}
       {!mapLoaded && (
@@ -720,7 +698,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
               {mapMode === 'infrared' && '🌡️ NASA WISE All-Sky Survey'}
               {mapMode === 'planck' && '🌌 ESA Planck CMB'}
               {mapMode === 'fallback' && '✨ Procedural Starfield'}
-              {mapMode === 'debug' && '🗺️ Debug Map (OSM)'}
+
             </div>
             <p className="text-xs text-gray-400 px-2">
               Use header dropdown to change background
@@ -737,7 +715,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
                           mapInstanceRef.current.fitBounds(group.getBounds(), { padding: [50, 50] })
                         }
                       } catch (error) {
-                        console.log('Could not fit bounds:', error)
+                        // Could not fit bounds
                       }
                     }
                   }}
@@ -751,7 +729,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
                 onClick={() => {
                   if (mapInstanceRef.current) {
                     mapInstanceRef.current.setView([0, 0], 3)
-                    console.log('🗺️ Reset to center view')
+                    // Reset to center view
                   }
                 }}
                 className="w-full text-left px-2 py-1 rounded text-xs bg-blue-600 hover:bg-blue-700 transition-colors"
@@ -819,18 +797,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
               ))}
             </div>
 
-            {/* Debug Toggle */}
-            {process.env.NODE_ENV === 'development' && (
-              <button
-                onClick={() => {
-                  const newMode = mapMode === 'debug' ? 'survey' : 'debug'
-                  setMapMode(newMode as any)
-                }}
-                className="w-full text-left px-2 py-1 rounded text-xs bg-yellow-600 hover:bg-yellow-700 transition-colors"
-              >
-                🗺️ {mapMode === 'debug' ? 'Space View' : 'Debug Map'}
-              </button>
-            )}
+
           </div>
         </div>
 
@@ -863,7 +830,7 @@ const SpaceTileMap: React.FC<SpaceTileMapProps> = ({
               </div>
             )}
           </div>
-          {/* Debug: Show first few objects */}
+
           {celestialObjects.length > 0 && (
             <div className="mt-2 text-xs text-gray-300">
               <div>First: {celestialObjects[0]?.name}</div>

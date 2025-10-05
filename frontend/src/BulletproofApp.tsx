@@ -522,7 +522,7 @@ const SimpleGallery: React.FC<{ selectedObject: string | null }> = ({ selectedOb
           setCurrentResolution(targetResolution)
           setResolutionLoading(null)
         } catch (error) {
-          console.warn(`Failed to load ${targetResolution} for ${selectedImage.id}`)
+          // Failed to load higher resolution
           setResolutionLoading(null)
         }
       }

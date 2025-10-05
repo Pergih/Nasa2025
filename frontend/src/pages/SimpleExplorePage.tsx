@@ -275,22 +275,8 @@ const SimpleExplorePage: React.FC = () => {
 
                 // Get objects for current background type
                 const objects = getObjectsForBackground(backgroundType)
-                console.log('Loaded objects:', objects.length, objects)
-
-                // Debug: Check for objects with missing coordinates
+                // Filter objects with valid coordinates
                 const objectsWithCoords = objects.filter(obj => obj.ra !== undefined && obj.dec !== undefined)
-                const objectsWithoutCoords = objects.filter(obj => obj.ra === undefined || obj.dec === undefined)
-
-                console.log('Objects with coordinates:', objectsWithCoords.length)
-                console.log('Objects without coordinates:', objectsWithoutCoords.length, objectsWithoutCoords)
-
-                // Debug: Show coordinate ranges
-                if (objectsWithCoords.length > 0) {
-                    const raValues = objectsWithCoords.map(obj => obj.ra)
-                    const decValues = objectsWithCoords.map(obj => obj.dec)
-                    console.log('RA range:', Math.min(...raValues), 'to', Math.max(...raValues))
-                    console.log('Dec range:', Math.min(...decValues), 'to', Math.max(...decValues))
-                }
 
                 setCelestialObjects(objects)
                 
@@ -307,13 +293,13 @@ const SimpleExplorePage: React.FC = () => {
                             setSelectedImage(images[0])
                         }
                     } catch (error) {
-                        console.error('Failed to load images:', error)
+                        // Failed to load images
                     } finally {
                         setLoadingImages(false)
                     }
                 }
             } catch (error) {
-                console.error('Failed to load data:', error)
+                // Failed to load data
             } finally {
                 setLoading(false)
             }
@@ -672,35 +658,7 @@ const SimpleExplorePage: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Debug Info */}
-                            {process.env.NODE_ENV === 'development' && (
-                                <div className="mt-2 space-y-1">
-                                    <button
-                                        onClick={() => {
-                                            console.log('All objects:', celestialObjects)
-                                            console.log('Filtered objects:', filteredObjects)
-                                            console.log('Background type:', backgroundType)
 
-                                            // Show object types breakdown
-                                            const typeBreakdown = celestialObjects.reduce((acc, obj) => {
-                                                acc[obj.type] = (acc[obj.type] || 0) + 1
-                                                return acc
-                                            }, {} as Record<string, number>)
-                                            console.log('Object types:', typeBreakdown)
-                                        }}
-                                        className="text-xs bg-gray-600 hover:bg-gray-500 px-2 py-1 rounded text-white block"
-                                    >
-                                        🐛 Debug Objects
-                                    </button>
-
-                                    {/* Show current stats */}
-                                    <div className="text-xs text-gray-400 space-y-1">
-                                        <div>Total: {celestialObjects.length} | Filtered: {filteredObjects.length}</div>
-                                        <div>Background: {backgroundType}</div>
-                                        {searchQuery && <div>Search: "{searchQuery}"</div>}
-                                    </div>
-                                </div>
-                            )}
 
                             {/* Object Type Filter */}
                             <div className="mt-3">
@@ -978,7 +936,7 @@ const SimpleExplorePage: React.FC = () => {
                                                 <button
                                                     onClick={() => {
                                                         // Center map on object
-                                                        console.log('Center on object:', selectedObject.name)
+                                                        // Center map on object
                                                     }}
                                                     className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg transition-colors"
                                                 >
@@ -1004,12 +962,7 @@ const SimpleExplorePage: React.FC = () => {
                                     </h3>
                                 </div>
                                 <div className="flex-1 overflow-y-auto p-4">
-                                    {/* Simple status */}
-                                    {process.env.NODE_ENV === 'development' && (
-                                        <div className="mb-4 p-2 bg-gray-700 rounded text-xs text-gray-300">
-                                            <div>{objectImages.length} images • {selectedObject?.name || 'No selection'}</div>
-                                        </div>
-                                    )}
+
                                     
                                     <div className="space-y-2">
                                         {loadingImages ? (
@@ -1037,7 +990,7 @@ const SimpleExplorePage: React.FC = () => {
                                                     alt={image.title}
                                                     className="w-full h-32 object-cover"
                                                     onError={(e) => {
-                                                        console.error('❌ Thumbnail failed to load:', image.thumbnail || image.url)
+                                                        // Thumbnail failed to load, show fallback
                                                         const target = e.target as HTMLImageElement
                                                         target.src = 'data:image/svg+xml;base64,' + btoa(`
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="200" height="128" viewBox="0 0 200 128">
@@ -1049,7 +1002,7 @@ const SimpleExplorePage: React.FC = () => {
                                                         `)
                                                     }}
                                                     onLoad={() => {
-                                                        console.log('✅ Thumbnail loaded:', image.title)
+                                                        // Thumbnail loaded successfully
                                                     }}
                                                 />
                                                 <div className="p-2">

@@ -30,8 +30,6 @@ export const imageAPI = {
   // Get images for a celestial object using working NASA URLs
   getObjectImages: async (objectName: string, ra: number, dec: number): Promise<SpaceImage[]> => {
     try {
-      console.log(`🖼️ Loading images for ${objectName}`)
-      
       const workingImages: SpaceImage[] = []
       
       // Helper function for safe SVG data URLs
@@ -99,7 +97,7 @@ export const imageAPI = {
             })
           }
         } catch (error) {
-          console.log('NASA API enhancement failed, using base images')
+          // NASA API enhancement failed, using base images
         }
       }
       
@@ -259,8 +257,6 @@ export const imageAPI = {
         processing_level: 'Simulated'
       })
 
-      console.log(`🖼️ Loaded ${workingImages.length} images for ${objectName}`)
-      
       return workingImages
       
     } catch (error) {

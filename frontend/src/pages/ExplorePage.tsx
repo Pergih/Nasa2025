@@ -59,7 +59,7 @@ const ExplorePage: React.FC = () => {
                     searchResults.push(results[0])
                   }
                 } catch (searchError) {
-                  console.log(`Search for ${term} failed:`, searchError)
+                  // Search failed for this term
                 }
               }
 
